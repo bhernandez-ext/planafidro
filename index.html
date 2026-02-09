@@ -1,0 +1,3209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFIDRO - Plan Estratégico 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a5f 100%);
+            color: white;
+            padding: 16px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo-container {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-container img {
+            height: 35px;
+            width: auto;
+        }
+        
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+        
+        .header-title p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .header-stat {
+            text-align: center;
+        }
+        
+        .header-stat-value {
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .header-stat-label {
+            font-size: 10px;
+            opacity: 0.85;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Navigation Tabs */
+        .nav-tabs {
+            background: white;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .nav-tabs-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .nav-tab {
+            padding: 14px 20px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .nav-tab:hover {
+            color: #2c5aa0;
+            background: #f8fafc;
+        }
+        
+        .nav-tab.active {
+            color: #2c5aa0;
+            border-bottom-color: #2c5aa0;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Filters Panel */
+        .filters-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+            gap: 16px;
+            align-items: end;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #2c5aa0;
+        }
+        
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary {
+            background: #718096;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #4a5568;
+        }
+        
+        .btn-primary {
+            background: #2c5aa0;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1e3a5f;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        /* Active Filter Badge */
+        .active-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .filter-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: #e0e7ff;
+            color: #3730a3;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .filter-badge-close {
+            cursor: pointer;
+            font-weight: 700;
+            opacity: 0.7;
+        }
+        
+        .filter-badge-close:hover {
+            opacity: 1;
+        }
+        
+        /* Table styles */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        thead {
+            background: #f8fafc;
+        }
+        
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+        
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+        
+        tbody tr.selected {
+            background: #e0e7ff;
+        }
+        
+        td {
+            padding: 12px 16px;
+            vertical-align: middle;
+        }
+        
+        .id-cell {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        
+        .kpi-cell {
+            max-width: 400px;
+        }
+        
+        .kpi-title {
+            font-weight: 500;
+            color: #1e293b;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+        
+        .kpi-subtitle {
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.3;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .badge.direccion {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .badge.trimestre {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+        
+        .badge.tipo {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge.estado-no-iniciado {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .badge.estado-en-progreso {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .badge.estado-completado {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .badge.estado-con-retrasos {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+        
+        .progress-cell {
+            min-width: 140px;
+        }
+        
+        .progress-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .progress-bar-mini {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        .progress-fill.high { background: #10b981; }
+        .progress-fill.medium { background: #f59e0b; }
+        .progress-fill.low { background: #ef4444; }
+        
+        .progress-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            min-width: 40px;
+            text-align: right;
+        }
+        
+        .meta-cell {
+            text-align: right;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .meta-unit {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 400;
+            margin-left: 2px;
+        }
+        
+        .semaforo-cell {
+            text-align: center;
+            font-size: 20px;
+        }
+        
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid #e2e8f0;
+        }
+        
+        .metric-card.primary { border-left-color: #2c5aa0; }
+        .metric-card.success { border-left-color: #10b981; }
+        .metric-card.warning { border-left-color: #f59e0b; }
+        .metric-card.danger { border-left-color: #ef4444; }
+        
+        .metric-card-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
+        .metric-card-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1;
+        }
+        
+        .metric-card-change {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chart-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .chart-card.clickable {
+            border: 2px solid transparent;
+        }
+        
+        .chart-card.clickable:hover {
+            border-color: #2c5aa0;
+        }
+        
+        .chart-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        /* Heatmap */
+        .heatmap-container {
+            overflow-x: auto;
+        }
+        
+        .heatmap-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 4px;
+        }
+        
+        .heatmap-table th,
+        .heatmap-table td {
+            padding: 16px;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+        
+        .heatmap-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .heatmap-cell {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .heatmap-cell:hover {
+            transform: scale(1.05);
+        }
+        
+        .heatmap-cell.high { background: #d1fae5; color: #065f46; }
+        .heatmap-cell.medium { background: #fef3c7; color: #92400e; }
+        .heatmap-cell.low { background: #fee2e2; color: #991b1b; }
+        .heatmap-cell.none { background: #f1f5f9; color: #94a3b8; }
+        
+        /* Top/Bottom Lists */
+        .list-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+        
+        .list-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+        
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .list-item:hover {
+            background: #f1f5f9;
+            transform: translateX(4px);
+        }
+        
+        .list-item.success { border-left-color: #10b981; }
+        .list-item.danger { border-left-color: #ef4444; }
+        
+        .list-item-info {
+            flex: 1;
+        }
+        
+        .list-item-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .list-item-subtitle {
+            font-size: 11px;
+            color: #64748b;
+        }
+        
+        .list-item-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        /* Timeline View */
+        .timeline-container {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+        
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .timeline-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .timeline-legend {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+        }
+        
+        .timeline-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .timeline-legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-quarter {
+            margin-bottom: 40px;
+        }
+        
+        .timeline-quarter-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .timeline-quarter-label {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            min-width: 80px;
+        }
+        
+        .timeline-quarter-bar {
+            flex: 1;
+            height: 24px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .timeline-quarter-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #2c5aa0 0%, #4c7fc4 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .timeline-quarter-count {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+        }
+        
+        .timeline-kpis {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin-left: 96px;
+        }
+        
+        .timeline-kpi-item {
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .timeline-kpi-item:hover {
+            background: #f1f5f9;
+            transform: translateX(4px);
+        }
+        
+        .timeline-kpi-item.green { border-left-color: #10b981; }
+        .timeline-kpi-item.yellow { border-left-color: #f59e0b; }
+        .timeline-kpi-item.red { border-left-color: #ef4444; }
+        
+        .timeline-kpi-title {
+            font-size: 12px;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .timeline-kpi-meta {
+            font-size: 10px;
+            color: #64748b;
+        }
+        
+        /* Roadmap Grid */
+        .roadmap-grid {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+        
+        .roadmap-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px;
+        }
+        
+        .roadmap-table th {
+            padding: 12px;
+            background: #f8fafc;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 12px;
+            text-align: center;
+            border-radius: 6px;
+        }
+        
+        .roadmap-table td {
+            padding: 16px;
+            text-align: center;
+            vertical-align: top;
+        }
+        
+        .roadmap-cell {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 80px;
+        }
+        
+        .roadmap-dots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+        }
+        
+        .roadmap-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .roadmap-dot:hover {
+            transform: scale(1.5);
+        }
+        
+        .roadmap-dot.green { background: #10b981; }
+        .roadmap-dot.yellow { background: #f59e0b; }
+        .roadmap-dot.red { background: #ef4444; }
+        
+        .roadmap-count {
+            margin-top: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 32px;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: #e2e8f0;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 24px;
+            padding-right: 40px;
+        }
+        
+        /* Admin Panel */
+        .admin-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+        
+        .admin-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .file-input-label {
+            display: inline-block;
+            padding: 10px 24px;
+            background: #2c5aa0;
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .file-input-label:hover {
+            background: #1e3a5f;
+        }
+        
+        .data-preview {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        .data-preview h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+        
+        .data-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+        
+        .data-stat {
+            text-align: center;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .data-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c5aa0;
+        }
+        
+        .data-stat-label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .toast.show {
+            display: flex;
+        }
+        
+        .toast.success {
+            border-left: 4px solid #10b981;
+        }
+        
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #94a3b8;
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        /* Chat AI Button & Panel */
+        .chat-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c5aa0 0%, #4c7fc4 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .chat-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(44, 90, 160, 0.4);
+        }
+        
+        .chat-fab.active {
+            background: #718096;
+        }
+        
+        .chat-panel {
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            z-index: 999;
+            overflow: hidden;
+        }
+        
+        .chat-panel.open {
+            display: flex;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #2c5aa0 0%, #4c7fc4 100%);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-header-title h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .chat-header-subtitle {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+        
+        .chat-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        
+        .chat-close:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: #f8fafc;
+        }
+        
+        .chat-message {
+            display: flex;
+            gap: 12px;
+            animation: messageIn 0.3s ease;
+        }
+        
+        @keyframes messageIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .chat-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .chat-avatar.ai {
+            background: linear-gradient(135deg, #2c5aa0 0%, #4c7fc4 100%);
+            color: white;
+        }
+        
+        .chat-avatar.user {
+            background: #e2e8f0;
+            color: #475569;
+        }
+        
+        .chat-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        .chat-message.ai .chat-bubble {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+        
+        .chat-message.user .chat-bubble {
+            background: #2c5aa0;
+            color: white;
+        }
+        
+        .chat-typing {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            max-width: fit-content;
+        }
+        
+        .chat-typing.active {
+            display: flex;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94a3b8;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .chat-input-container {
+            padding: 16px 20px;
+            border-top: 1px solid #e2e8f0;
+            background: white;
+        }
+        
+        .chat-input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            resize: none;
+            font-family: inherit;
+            max-height: 120px;
+            transition: border-color 0.2s;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: #2c5aa0;
+        }
+        
+        .chat-send {
+            padding: 12px;
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+        }
+        
+        .chat-send:hover {
+            background: #1e3a5f;
+        }
+        
+        .chat-send:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+        
+        .chat-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .chat-suggestion {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chat-suggestion:hover {
+            background: #f1f5f9;
+            border-color: #2c5aa0;
+            color: #2c5aa0;
+        }
+        
+        .chat-filter-applied {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #e0e7ff;
+            color: #3730a3;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+        
+        .chat-filter-applied:hover {
+            background: #c7d2fe;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chat-panel {
+                width: calc(100vw - 32px);
+                right: 16px;
+                bottom: 90px;
+                height: calc(100vh - 140px);
+            }
+            
+            .chat-fab {
+                bottom: 16px;
+                right: 16px;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .filters-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+            
+            .filter-group:first-child {
+                grid-column: 1 / -1;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-stats {
+                display: none;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                overflow-x: auto;
+            }
+            
+            .timeline-kpis {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-container">
+                    <img src="data:image/png;base64,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" alt="AFIDRO Logo">
+                </div>
+                <div class="header-title">
+                    <h1>Plan Estratégico 2026</h1>
+                    <p>Dashboard de Seguimiento - Actualizado <span id="lastUpdate">Feb 2026</span></p>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="header-stat">
+                    <div class="header-stat-value" id="headerTotal">0</div>
+                    <div class="header-stat-label">Total KPIs</div>
+                </div>
+                <div class="header-stat">
+                    <div class="header-stat-value" id="headerAvg">0%</div>
+                    <div class="header-stat-label">Promedio</div>
+                </div>
+                <div class="header-stat">
+                    <div class="header-stat-value" id="headerGreen">0</div>
+                    <div class="header-stat-label">En Ruta</div>
+                </div>
+                <div class="header-stat">
+                    <div class="header-stat-value" id="headerRed">0</div>
+                    <div class="header-stat-label">En Riesgo</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <div class="nav-tabs-container">
+            <button class="nav-tab active" data-tab="seguimiento">📋 Seguimiento</button>
+            <button class="nav-tab" data-tab="analytics">📊 Analytics</button>
+            <button class="nav-tab" data-tab="plan">🗺️ Vista del Plan</button>
+            <button class="nav-tab" data-tab="admin">⚙️ Administración</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- TAB 1: SEGUIMIENTO -->
+        <div class="tab-content active" id="tab-seguimiento">
+            <div class="filters-panel">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>🔍 Buscar</label>
+                        <input type="text" id="searchInput" placeholder="Buscar en KPI, objetivo o acciones...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Dirección</label>
+                        <select id="filterDireccion">
+                            <option value="Todas">Todas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Trimestre</label>
+                        <select id="filterTrimestre">
+                            <option value="Todos">Todos</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Tipo KPI</label>
+                        <select id="filterTipo">
+                            <option value="Todos">Todos</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Estado</label>
+                        <select id="filterEstado">
+                            <option value="Todos">Todos</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-secondary" id="btnClear">Limpiar</button>
+                    </div>
+                </div>
+                <div class="active-filters" id="activeFiltersContainer" style="display: none;"></div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Dirección</th>
+                                <th>KPI</th>
+                                <th>Trimestre</th>
+                                <th>Tipo</th>
+                                <th style="text-align: right;">Meta</th>
+                                <th style="text-align: right;">Avance</th>
+                                <th>Progreso</th>
+                                <th>Estado</th>
+                                <th style="text-align: center;">🚦</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">🔍</div>
+                <div>No se encontraron KPIs con los filtros aplicados</div>
+            </div>
+        </div>
+
+        <!-- TAB 2: ANALYTICS -->
+        <div class="tab-content" id="tab-analytics">
+            <!-- Metrics Cards -->
+            <div class="cards-grid">
+                <div class="metric-card primary">
+                    <div class="metric-card-label">Total KPIs</div>
+                    <div class="metric-card-value" id="metricTotal">0</div>
+                    <div class="metric-card-change">Planificados para 2026</div>
+                </div>
+                <div class="metric-card success">
+                    <div class="metric-card-label">Completados</div>
+                    <div class="metric-card-value" id="metricCompleted">0</div>
+                    <div class="metric-card-change"><span id="metricCompletedPct">0%</span> del total</div>
+                </div>
+                <div class="metric-card warning">
+                    <div class="metric-card-label">En Progreso</div>
+                    <div class="metric-card-value" id="metricInProgress">0</div>
+                    <div class="metric-card-change"><span id="metricInProgressPct">0%</span> del total</div>
+                </div>
+                <div class="metric-card danger">
+                    <div class="metric-card-label">Score General</div>
+                    <div class="metric-card-value" id="metricScore">0%</div>
+                    <div class="metric-card-change">Cumplimiento promedio</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="chart-card clickable" data-chart="direccion">
+                    <h3>% Cumplimiento por Dirección <small style="color: #94a3b8;">(Click para filtrar)</small></h3>
+                    <div class="chart-container">
+                        <canvas id="chartDireccion"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card clickable" data-chart="estados">
+                    <h3>Distribución de Estados <small style="color: #94a3b8;">(Click para filtrar)</small></h3>
+                    <div class="chart-container">
+                        <canvas id="chartEstados"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card clickable" data-chart="trimestres">
+                    <h3>KPIs por Trimestre <small style="color: #94a3b8;">(Click para filtrar)</small></h3>
+                    <div class="chart-container">
+                        <canvas id="chartTrimestres"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card clickable" data-chart="tipos">
+                    <h3>Distribución por Tipo <small style="color: #94a3b8;">(Click para filtrar)</small></h3>
+                    <div class="chart-container">
+                        <canvas id="chartTipos"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Heatmap -->
+            <div class="chart-card">
+                <h3>Heatmap: Salud por Dirección y Trimestre <small style="color: #94a3b8;">(Click en celda para ver KPIs)</small></h3>
+                <div class="heatmap-container">
+                    <table class="heatmap-table" id="heatmapTable"></table>
+                </div>
+            </div>
+
+            <!-- Top/Bottom Performers -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div class="list-card">
+                    <h3>🏆 Top 5 KPIs - Mejor Desempeño</h3>
+                    <div id="topPerformers"></div>
+                </div>
+                <div class="list-card">
+                    <h3>⚠️ Bottom 5 KPIs - Requieren Atención</h3>
+                    <div id="bottomPerformers"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: VISTA DEL PLAN -->
+        <div class="tab-content" id="tab-plan">
+            <!-- Timeline -->
+            <div class="timeline-container">
+                <div class="timeline-header">
+                    <h2>Timeline 2026 por Trimestre</h2>
+                    <div class="timeline-legend">
+                        <div class="timeline-legend-item">
+                            <span class="timeline-legend-dot" style="background: #10b981;"></span>
+                            En ruta
+                        </div>
+                        <div class="timeline-legend-item">
+                            <span class="timeline-legend-dot" style="background: #f59e0b;"></span>
+                            Con alertas
+                        </div>
+                        <div class="timeline-legend-item">
+                            <span class="timeline-legend-dot" style="background: #ef4444;"></span>
+                            En riesgo
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline" id="timelineContainer"></div>
+            </div>
+
+            <!-- Roadmap Matrix -->
+            <div class="roadmap-grid">
+                <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 700; color: #1e293b;">
+                    Roadmap: Dirección x Trimestre
+                </h2>
+                <table class="roadmap-table" id="roadmapTable"></table>
+            </div>
+        </div>
+
+        <!-- TAB 4: ADMINISTRACIÓN -->
+        <div class="tab-content" id="tab-admin">
+            <div class="admin-card">
+                <h3>📁 Gestión de Datos</h3>
+                <p style="color: #64748b; margin-bottom: 24px;">
+                    Importa un CSV actualizado o exporta los datos actuales del dashboard.
+                </p>
+                
+                <div class="admin-actions">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="csvFileInput" accept=".csv">
+                        <label for="csvFileInput" class="file-input-label">
+                            📁 Importar CSV
+                        </label>
+                    </div>
+                    <button class="btn btn-success" id="btnExportCSV">💾 Exportar CSV</button>
+                    <button class="btn btn-primary" id="btnExportExcel">📊 Exportar Excel</button>
+                </div>
+
+                <div class="data-preview">
+                    <h4>📊 Vista Previa de Datos</h4>
+                    <div class="data-stats">
+                        <div class="data-stat">
+                            <div class="data-stat-value" id="adminTotal">0</div>
+                            <div class="data-stat-label">Total KPIs</div>
+                        </div>
+                        <div class="data-stat">
+                            <div class="data-stat-value" id="adminDirecciones">0</div>
+                            <div class="data-stat-label">Direcciones</div>
+                        </div>
+                        <div class="data-stat">
+                            <div class="data-stat-value" id="adminAvg">0%</div>
+                            <div class="data-stat-label">Promedio</div>
+                        </div>
+                        <div class="data-stat">
+                            <div class="data-stat-value" id="adminLastUpdate">-</div>
+                            <div class="data-stat-label">Actualización</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <h3>ℹ️ Información Técnica</h3>
+                <div style="color: #64748b; line-height: 1.8;">
+                    <p style="margin-bottom: 12px;">
+                        <strong>Formato CSV requerido:</strong><br>
+                        ID_KPI, Direccion, KPI, Objetivo_Especifico, Acciones, Trimestre, Tipo_KPI, Meta, Unidad, Avance, Porcentaje, Estado, Semaforo, Responsable, Comentarios
+                    </p>
+                    <p style="margin-bottom: 12px;">
+                        <strong>Valores de Estado permitidos:</strong><br>
+                        No iniciado, En progreso, Completado, Con retrasos
+                    </p>
+                    <p>
+                        <strong>Valores de Semáforo:</strong><br>
+                        🟢 (en ruta), 🟡 (con alertas), 🔴 (en riesgo)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for KPI Details -->
+    <div class="modal" id="kpiModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">×</button>
+            <div class="modal-title" id="modalTitle"></div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Chat AI Panel -->
+    <button class="chat-fab" id="chatFab" title="Pregúntale a la IA sobre tu plan">
+        🤖
+    </button>
+
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <div class="chat-header-title">
+                <span>🤖</span>
+                <div>
+                    <h3>Asistente AFIDRO</h3>
+                    <div class="chat-header-subtitle">Pregunta sobre tu plan estratégico</div>
+                </div>
+            </div>
+            <button class="chat-close" id="chatClose">×</button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message ai">
+                <div class="chat-avatar ai">🤖</div>
+                <div>
+                    <div class="chat-bubble">
+                        ¡Hola! Soy tu asistente de IA. Puedo ayudarte a:
+                        <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+                            <li>Responder preguntas sobre tus KPIs</li>
+                            <li>Analizar avances y riesgos</li>
+                            <li>Filtrar y buscar información</li>
+                            <li>Generar insights del plan</li>
+                        </ul>
+                        ¿Qué te gustaría saber?
+                    </div>
+                    <div class="chat-suggestions">
+                        <div class="chat-suggestion" data-prompt="¿Cuál es el avance general del plan?">📊 Avance general</div>
+                        <div class="chat-suggestion" data-prompt="¿Qué KPIs están en riesgo?">⚠️ En riesgo</div>
+                        <div class="chat-suggestion" data-prompt="¿Cómo va Comunicaciones?">📢 Comunicaciones</div>
+                        <div class="chat-suggestion" data-prompt="Dame recomendaciones">💡 Recomendaciones</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-typing" id="chatTyping">
+                <div class="chat-avatar ai">🤖</div>
+                <div class="typing-dots">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <textarea 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Escribe tu pregunta..."
+                    rows="1"
+                ></textarea>
+                <button class="chat-send" id="chatSend">
+                    ➤
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script>
+        // DATOS DE EJEMPLO (continúa con los 21 KPIs del ejemplo anterior)
+        let kpisData = [
+            {
+                ID_KPI: 'COM-Q1-001',
+                Direccion: 'Comunicaciones',
+                KPI: 'Publicaciones en medios sobre financiamiento y salud',
+                Objetivo_Especifico: 'Impulsar acciones movilizadoras para ajuste financiero del sistema',
+                Acciones: 'Mantener en agenda mediática conversación sobre financiamiento y salud',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 300,
+                Unidad: 'publicaciones',
+                Avance: 180,
+                Porcentaje: 60,
+                Estado: 'En progreso',
+                Semaforo: '🟡',
+                Responsable: 'María Gómez',
+                Comentarios: 'Vamos según lo planeado'
+            },
+            {
+                ID_KPI: 'COM-Q1-002',
+                Direccion: 'Comunicaciones',
+                KPI: 'Campaña de pedagogía electoral realizada',
+                Objetivo_Especifico: 'Sensibilizar ciudadanía sobre momento electoral',
+                Acciones: 'Campaña sin posición política enfocada en sistema de salud',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Entregable',
+                Meta: 1,
+                Unidad: 'campañas',
+                Avance: 1,
+                Porcentaje: 100,
+                Estado: 'Completado',
+                Semaforo: '🟢',
+                Responsable: 'Carlos Ramírez',
+                Comentarios: 'Completado exitosamente'
+            },
+            {
+                ID_KPI: 'COM-Q1-003',
+                Direccion: 'Comunicaciones',
+                KPI: 'Personas impactadas por campaña pedagogía electoral',
+                Objetivo_Especifico: 'Alcance masivo de mensaje electoral',
+                Acciones: '1 millón de personas impactadas',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 1000000,
+                Unidad: 'personas',
+                Avance: 850000,
+                Porcentaje: 85,
+                Estado: 'En progreso',
+                Semaforo: '🟢',
+                Responsable: 'Carlos Ramírez',
+                Comentarios: 'Superando expectativas'
+            },
+            {
+                ID_KPI: 'COM-Q2-001',
+                Direccion: 'Comunicaciones',
+                KPI: 'Evento sobre los 100 días realizado',
+                Objetivo_Especifico: 'Conversación sobre 100 primeros días del Gobierno',
+                Acciones: 'Evento sobre sostenibilidad financiera',
+                Trimestre: 'Q2',
+                Tipo_KPI: 'Entregable',
+                Meta: 1,
+                Unidad: 'eventos',
+                Avance: 0,
+                Porcentaje: 0,
+                Estado: 'No iniciado',
+                Semaforo: '🔴',
+                Responsable: 'María Gómez',
+                Comentarios: ''
+            },
+            {
+                ID_KPI: 'COM-Q2-002',
+                Direccion: 'Comunicaciones',
+                KPI: 'Tomas de AFIDRO en regiones',
+                Objetivo_Especifico: 'Intensificar presencia territorial',
+                Acciones: '3 Tomas en Cali, Santa Marta y Montería',
+                Trimestre: 'Q2',
+                Tipo_KPI: 'Entregable',
+                Meta: 3,
+                Unidad: 'eventos',
+                Avance: 1,
+                Porcentaje: 33,
+                Estado: 'Con retrasos',
+                Semaforo: '🔴',
+                Responsable: 'Ana Martínez',
+                Comentarios: 'Retrasos logísticos'
+            },
+            {
+                ID_KPI: 'LEG-Q1-001',
+                Direccion: 'Asuntos Legislativos',
+                KPI: 'Proyectos de ley monitoreados en Congreso',
+                Objetivo_Especifico: 'Seguimiento de iniciativas legislativas',
+                Acciones: 'Monitoreo permanente de proyectos relevantes',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 25,
+                Unidad: 'proyectos',
+                Avance: 22,
+                Porcentaje: 88,
+                Estado: 'En progreso',
+                Semaforo: '🟢',
+                Responsable: 'Juan Pérez',
+                Comentarios: 'Excelente seguimiento'
+            },
+            {
+                ID_KPI: 'LEG-Q1-002',
+                Direccion: 'Asuntos Legislativos',
+                KPI: 'Reuniones con UTLs del Congreso',
+                Objetivo_Especifico: 'Canales de comunicación con tomadores de decisión',
+                Acciones: 'Relacionamiento con unidades técnicas legislativas',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 15,
+                Unidad: 'reuniones',
+                Avance: 12,
+                Porcentaje: 80,
+                Estado: 'En progreso',
+                Semaforo: '🟢',
+                Responsable: 'Juan Pérez',
+                Comentarios: 'Agenda activa'
+            },
+            {
+                ID_KPI: 'LEG-Q1-003',
+                Direccion: 'Asuntos Legislativos',
+                KPI: 'Conceptos técnicos entregados a Congreso',
+                Objetivo_Especifico: 'Aportar evidencia técnica para debates',
+                Acciones: 'Documentos técnicos sobre proyectos prioritarios',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Entregable',
+                Meta: 8,
+                Unidad: 'conceptos',
+                Avance: 5,
+                Porcentaje: 63,
+                Estado: 'En progreso',
+                Semaforo: '🟡',
+                Responsable: 'Laura Torres',
+                Comentarios: 'En elaboración'
+            },
+            {
+                ID_KPI: 'LEG-Q2-001',
+                Direccion: 'Asuntos Legislativos',
+                KPI: 'Mesas de trabajo con bancadas',
+                Objetivo_Especifico: 'Coordinar agendas con grupos parlamentarios',
+                Acciones: 'Encuentros estratégicos con bancadas',
+                Trimestre: 'Q2',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 6,
+                Unidad: 'mesas',
+                Avance: 1,
+                Porcentaje: 17,
+                Estado: 'Con retrasos',
+                Semaforo: '🔴',
+                Responsable: 'Juan Pérez',
+                Comentarios: 'Agenda de Congreso compleja'
+            },
+            {
+                ID_KPI: 'REG-Q1-001',
+                Direccion: 'Asuntos Regulatorios',
+                KPI: 'Mesas técnicas coordinadas con INVIMA',
+                Objetivo_Especifico: 'Fortalecer relación con autoridad regulatoria',
+                Acciones: 'Espacios de diálogo técnico',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 6,
+                Unidad: 'mesas',
+                Avance: 6,
+                Porcentaje: 100,
+                Estado: 'Completado',
+                Semaforo: '🟢',
+                Responsable: 'Roberto Silva',
+                Comentarios: 'Excelente coordinación'
+            },
+            {
+                ID_KPI: 'REG-Q1-002',
+                Direccion: 'Asuntos Regulatorios',
+                KPI: 'Documentos técnicos presentados a INVIMA',
+                Objetivo_Especifico: 'Evidencia para mejoras regulatorias',
+                Acciones: 'Propuestas técnicas fundamentadas',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Entregable',
+                Meta: 10,
+                Unidad: 'documentos',
+                Avance: 7,
+                Porcentaje: 70,
+                Estado: 'En progreso',
+                Semaforo: '🟢',
+                Responsable: 'Patricia Ruiz',
+                Comentarios: 'Avance constante'
+            },
+            {
+                ID_KPI: 'REG-Q1-003',
+                Direccion: 'Asuntos Regulatorios',
+                KPI: 'Reuniones con empresas sobre regulación',
+                Objetivo_Especifico: 'Recoger necesidades regulatorias del sector',
+                Acciones: 'Encuentros bilaterales y grupales',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 20,
+                Unidad: 'reuniones',
+                Avance: 15,
+                Porcentaje: 75,
+                Estado: 'En progreso',
+                Semaforo: '🟢',
+                Responsable: 'Roberto Silva',
+                Comentarios: 'Buen engagement'
+            },
+            {
+                ID_KPI: 'REG-Q2-001',
+                Direccion: 'Asuntos Regulatorios',
+                KPI: 'Trámites acelerados gestionados con INVIMA',
+                Objetivo_Especifico: 'Reducir tiempos de aprobación',
+                Acciones: 'Ruta rápida para productos críticos',
+                Trimestre: 'Q2',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 15,
+                Unidad: 'trámites',
+                Avance: 0,
+                Porcentaje: 0,
+                Estado: 'No iniciado',
+                Semaforo: '🔴',
+                Responsable: 'Patricia Ruiz',
+                Comentarios: ''
+            },
+            {
+                ID_KPI: 'EFIREG-Q1-001',
+                Direccion: 'Eficiencia Regulatoria',
+                KPI: 'Set indicadores seguimiento plan contingencia',
+                Objetivo_Especifico: 'Alineación con Invima',
+                Acciones: 'Definir objetivos y seguimiento con INVIMA',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Entregable',
+                Meta: 1,
+                Unidad: 'sets',
+                Avance: 1,
+                Porcentaje: 100,
+                Estado: 'Completado',
+                Semaforo: '🟢',
+                Responsable: 'Diego López',
+                Comentarios: 'Entregado a tiempo'
+            },
+            {
+                ID_KPI: 'EFIREG-Q1-002',
+                Direccion: 'Eficiencia Regulatoria',
+                KPI: 'Piloto reliance diseñado',
+                Objetivo_Especifico: 'Acuerdos para pilotos Reliance',
+                Acciones: 'Coordinación con embajadas',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Entregable',
+                Meta: 1,
+                Unidad: 'pilotos',
+                Avance: 0,
+                Porcentaje: 0,
+                Estado: 'Con retrasos',
+                Semaforo: '🟡',
+                Responsable: 'Diego López',
+                Comentarios: 'Negociaciones en curso'
+            },
+            {
+                ID_KPI: 'IC-Q1-001',
+                Direccion: 'Investigación Clínica',
+                KPI: 'Empresas contactadas para estudios clínicos',
+                Objetivo_Especifico: 'Incrementar participación en investigación',
+                Acciones: 'Outreach a empresas y CROs',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 25,
+                Unidad: 'empresas',
+                Avance: 18,
+                Porcentaje: 72,
+                Estado: 'En progreso',
+                Semaforo: '🟢',
+                Responsable: 'Ana Martínez',
+                Comentarios: 'Buenos contactos'
+            },
+            {
+                ID_KPI: 'IC-Q1-002',
+                Direccion: 'Investigación Clínica',
+                KPI: 'Protocolos de investigación asesorados',
+                Objetivo_Especifico: 'Facilitar estudios clínicos',
+                Acciones: 'Asesoría técnica y regulatoria',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 15,
+                Unidad: 'protocolos',
+                Avance: 10,
+                Porcentaje: 67,
+                Estado: 'En progreso',
+                Semaforo: '🟡',
+                Responsable: 'Ana Martínez',
+                Comentarios: 'Avance esperado'
+            },
+            {
+                ID_KPI: 'IC-Q2-001',
+                Direccion: 'Investigación Clínica',
+                KPI: 'Eventos de promoción de IC realizados',
+                Objetivo_Especifico: 'Posicionar a Colombia como hub',
+                Acciones: 'Seminarios con stakeholders',
+                Trimestre: 'Q2',
+                Tipo_KPI: 'Entregable',
+                Meta: 3,
+                Unidad: 'eventos',
+                Avance: 1,
+                Porcentaje: 33,
+                Estado: 'Con retrasos',
+                Semaforo: '🔴',
+                Responsable: 'Ana Martínez',
+                Comentarios: 'Eventos complejos de coordinar'
+            },
+            {
+                ID_KPI: 'ECON-Q1-001',
+                Direccion: 'Asuntos Económicos',
+                KPI: 'Análisis económicos producidos',
+                Objetivo_Especifico: 'Evidencia técnica para política pública',
+                Acciones: 'Estudios sobre impacto económico',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Entregable',
+                Meta: 4,
+                Unidad: 'análisis',
+                Avance: 4,
+                Porcentaje: 100,
+                Estado: 'Completado',
+                Semaforo: '🟢',
+                Responsable: 'Roberto Silva',
+                Comentarios: 'Alta calidad'
+            },
+            {
+                ID_KPI: 'ECON-Q1-002',
+                Direccion: 'Asuntos Económicos',
+                KPI: 'Footprint de AFIDRO actualizado',
+                Objetivo_Especifico: 'Documentar aporte económico',
+                Acciones: 'Actualización anual de indicadores',
+                Trimestre: 'Q1',
+                Tipo_KPI: 'Entregable',
+                Meta: 1,
+                Unidad: 'estudios',
+                Avance: 1,
+                Porcentaje: 100,
+                Estado: 'Completado',
+                Semaforo: '🟢',
+                Responsable: 'Roberto Silva',
+                Comentarios: 'Publicado'
+            },
+            {
+                ID_KPI: 'ECON-Q2-001',
+                Direccion: 'Asuntos Económicos',
+                KPI: 'Modelos de financiamiento analizados',
+                Objetivo_Especifico: 'Explorar alternativas de sostenibilidad',
+                Acciones: 'Benchmarking internacional',
+                Trimestre: 'Q2',
+                Tipo_KPI: 'Cuantitativo',
+                Meta: 5,
+                Unidad: 'modelos',
+                Avance: 2,
+                Porcentaje: 40,
+                Estado: 'En progreso',
+                Semaforo: '🟡',
+                Responsable: 'Laura Torres',
+                Comentarios: 'Análisis profundos'
+            }
+        ];
+
+        let filteredKPIs = [...kpisData];
+        let charts = {};
+        let activeChartFilter = null;
+
+        // Continúa con el JavaScript completo...
+        // (Por límites de espacio, incluiré las funciones clave)
+
+        // ============================================
+        // CHAT AI FUNCTIONALITY
+        // ============================================
+        
+        let chatHistory = [];
+        
+        function initChat() {
+            const chatFab = document.getElementById('chatFab');
+            const chatPanel = document.getElementById('chatPanel');
+            const chatClose = document.getElementById('chatClose');
+            const chatInput = document.getElementById('chatInput');
+            const chatSend = document.getElementById('chatSend');
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // Toggle chat panel
+            chatFab.addEventListener('click', () => {
+                chatPanel.classList.toggle('open');
+                chatFab.classList.toggle('active');
+                if (chatPanel.classList.contains('open')) {
+                    chatInput.focus();
+                }
+            });
+            
+            chatClose.addEventListener('click', () => {
+                chatPanel.classList.remove('open');
+                chatFab.classList.remove('active');
+            });
+            
+            // Handle suggestions
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('chat-suggestion')) {
+                    const prompt = e.target.dataset.prompt;
+                    chatInput.value = prompt;
+                    sendChatMessage();
+                }
+            });
+            
+            // Send message on button click
+            chatSend.addEventListener('click', sendChatMessage);
+            
+            // Send message on Enter (Shift+Enter for new line)
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChatMessage();
+                }
+            });
+            
+            // Auto-resize textarea
+            chatInput.addEventListener('input', () => {
+                chatInput.style.height = 'auto';
+                chatInput.style.height = chatInput.scrollHeight + 'px';
+            });
+        }
+        
+        async function sendChatMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const chatMessages = document.getElementById('chatMessages');
+            const chatTyping = document.getElementById('chatTyping');
+            const chatSend = document.getElementById('chatSend');
+            
+            const userMessage = chatInput.value.trim();
+            if (!userMessage) return;
+            
+            // Add user message to UI
+            addChatMessage('user', userMessage);
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+            
+            // Disable input while processing
+            chatInput.disabled = true;
+            chatSend.disabled = true;
+            chatTyping.classList.add('active');
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            try {
+                // Simulate thinking delay for better UX
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                // Analyze query and generate response
+                const result = analyzeQuery(userMessage.toLowerCase());
+                
+                // Add to history
+                chatHistory.push(userMessage);
+                if (chatHistory.length > 10) {
+                    chatHistory = chatHistory.slice(-10);
+                }
+                
+                // Add AI response to UI
+                addChatMessage('ai', result.response, result.filter);
+                
+                // Apply filter if present
+                if (result.filter) {
+                    setTimeout(() => {
+                        applyFilterFromChat(result.filter.type, result.filter.value);
+                    }, 500);
+                }
+                
+            } catch (error) {
+                console.error('Chat error:', error);
+                addChatMessage('ai', '❌ Lo siento, hubo un error al procesar tu pregunta. Por favor intenta de nuevo.');
+            } finally {
+                chatTyping.classList.remove('active');
+                chatInput.disabled = false;
+                chatSend.disabled = false;
+                chatInput.focus();
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+        
+        function analyzeQuery(query) {
+            // Calculate metrics
+            const total = kpisData.length;
+            const avgProgress = Math.round(kpisData.reduce((sum, k) => sum + k.Porcentaje, 0) / total);
+            const completados = kpisData.filter(k => k.Estado === 'Completado').length;
+            const enProgreso = kpisData.filter(k => k.Estado === 'En progreso').length;
+            const conRetrasos = kpisData.filter(k => k.Estado === 'Con retrasos').length;
+            const noIniciados = kpisData.filter(k => k.Estado === 'No iniciado').length;
+            const enRiesgo = kpisData.filter(k => k.Semaforo === '🔴').length;
+            const enRuta = kpisData.filter(k => k.Semaforo === '🟢').length;
+            
+            // Detect query intent
+            let response = '';
+            let filter = null;
+            
+            // Avance general / resumen
+            if (query.match(/avance general|estado general|resumen|cómo va|qué tal va/)) {
+                response = `📊 **Resumen General del Plan Estratégico 2026:**\n\n` +
+                    `• Total KPIs: ${total}\n` +
+                    `• Cumplimiento promedio: ${avgProgress}%\n` +
+                    `• Completados: ${completados} (${Math.round(completados/total*100)}%)\n` +
+                    `• En progreso: ${enProgreso} (${Math.round(enProgreso/total*100)}%)\n` +
+                    `• Con retrasos: ${conRetrasos}\n` +
+                    `• No iniciados: ${noIniciados}\n\n` +
+                    `🟢 En ruta: ${enRuta} | 🔴 En riesgo: ${enRiesgo}`;
+            }
+            
+            // KPIs en riesgo
+            else if (query.match(/riesgo|crítico|urgente|alerta|problema|rojo/)) {
+                const enRiesgoList = kpisData.filter(k => k.Semaforo === '🔴');
+                response = `⚠️ **KPIs en Riesgo (${enRiesgoList.length}):**\n\n`;
+                enRiesgoList.slice(0, 5).forEach(kpi => {
+                    response += `🔴 ${kpi.KPI}\n   ${kpi.Direccion} • ${kpi.Porcentaje}% • ${kpi.Estado}\n\n`;
+                });
+                if (enRiesgoList.length > 5) {
+                    response += `... y ${enRiesgoList.length - 5} más.`;
+                }
+                filter = { type: 'estado', value: 'Con retrasos' };
+            }
+            
+            // Completados
+            else if (query.match(/completado|terminado|listo|finalizado/)) {
+                const completadosList = kpisData.filter(k => k.Estado === 'Completado');
+                response = `✅ **KPIs Completados (${completadosList.length}):**\n\n`;
+                completadosList.forEach(kpi => {
+                    response += `• ${kpi.KPI} (${kpi.Direccion})\n`;
+                });
+                filter = { type: 'estado', value: 'Completado' };
+            }
+            
+            // Por dirección específica
+            else if (query.match(/comunicaciones|comunicación/)) {
+                return analyzeDireccion('Comunicaciones');
+            }
+            else if (query.match(/legislativo|legislativa|congreso/)) {
+                return analyzeDireccion('Asuntos Legislativos');
+            }
+            else if (query.match(/regulatorio|regulatoria|invima/)) {
+                return analyzeDireccion('Asuntos Regulatorios');
+            }
+            else if (query.match(/eficiencia regulatoria/)) {
+                return analyzeDireccion('Eficiencia Regulatoria');
+            }
+            else if (query.match(/investigación clínica|ic\b/)) {
+                return analyzeDireccion('Investigación Clínica');
+            }
+            else if (query.match(/económico|económica|footprint/)) {
+                return analyzeDireccion('Asuntos Económicos');
+            }
+            
+            // Por trimestre
+            else if (query.match(/q1|trimestre 1|primer trimestre/)) {
+                return analyzeTrimestre('Q1');
+            }
+            else if (query.match(/q2|trimestre 2|segundo trimestre/)) {
+                return analyzeTrimestre('Q2');
+            }
+            else if (query.match(/q3|trimestre 3|tercer trimestre/)) {
+                return analyzeTrimestre('Q3');
+            }
+            else if (query.match(/q4|trimestre 4|cuarto trimestre/)) {
+                return analyzeTrimestre('Q4');
+            }
+            
+            // Por responsable
+            else if (query.match(/responsable|quién|quien/)) {
+                const responsables = {};
+                kpisData.forEach(kpi => {
+                    if (kpi.Responsable) {
+                        if (!responsables[kpi.Responsable]) {
+                            responsables[kpi.Responsable] = [];
+                        }
+                        responsables[kpi.Responsable].push(kpi);
+                    }
+                });
+                
+                response = `👥 **Responsables y sus KPIs:**\n\n`;
+                Object.entries(responsables).forEach(([nombre, kpis]) => {
+                    const avg = Math.round(kpis.reduce((sum, k) => sum + k.Porcentaje, 0) / kpis.length);
+                    response += `**${nombre}** (${kpis.length} KPIs, ${avg}% avg)\n`;
+                    kpis.slice(0, 2).forEach(kpi => {
+                        response += `  • ${kpi.KPI} - ${kpi.Porcentaje}%\n`;
+                    });
+                    response += '\n';
+                });
+            }
+            
+            // Top performers
+            else if (query.match(/mejor|top|destacado|sobresaliente/)) {
+                const sorted = [...kpisData].sort((a, b) => b.Porcentaje - a.Porcentaje);
+                response = `🏆 **Top 5 KPIs con Mejor Desempeño:**\n\n`;
+                sorted.slice(0, 5).forEach((kpi, i) => {
+                    response += `${i+1}. ${kpi.KPI}\n   ${kpi.Direccion} • ${kpi.Porcentaje}% ${kpi.Semaforo}\n\n`;
+                });
+            }
+            
+            // Por dirección (ranking)
+            else if (query.match(/dirección|direcciones|área|áreas/)) {
+                const byDir = {};
+                kpisData.forEach(kpi => {
+                    if (!byDir[kpi.Direccion]) byDir[kpi.Direccion] = { total: 0, sum: 0 };
+                    byDir[kpi.Direccion].total++;
+                    byDir[kpi.Direccion].sum += kpi.Porcentaje;
+                });
+                
+                const ranking = Object.entries(byDir)
+                    .map(([dir, data]) => ({
+                        dir,
+                        avg: Math.round(data.sum / data.total),
+                        total: data.total
+                    }))
+                    .sort((a, b) => b.avg - a.avg);
+                
+                response = `📊 **Ranking por Dirección:**\n\n`;
+                ranking.forEach((item, i) => {
+                    const emoji = item.avg >= 80 ? '🟢' : item.avg >= 60 ? '🟡' : '🔴';
+                    response += `${i+1}. ${item.dir}\n   ${item.avg}% promedio • ${item.total} KPIs ${emoji}\n\n`;
+                });
+            }
+            
+            // Recomendaciones
+            else if (query.match(/recomienda|suger|prioriz|qué hacer/)) {
+                const priorities = kpisData
+                    .filter(k => k.Semaforo === '🔴' || k.Estado === 'Con retrasos')
+                    .sort((a, b) => a.Porcentaje - b.Porcentaje);
+                
+                response = `💡 **Recomendaciones de Priorización:**\n\n`;
+                if (priorities.length > 0) {
+                    response += `**Atención Inmediata:**\n`;
+                    priorities.slice(0, 3).forEach(kpi => {
+                        response += `🔴 ${kpi.KPI}\n   Dirección: ${kpi.Direccion}\n   Avance: ${kpi.Porcentaje}%\n   Responsable: ${kpi.Responsable}\n\n`;
+                    });
+                } else {
+                    response += `✅ ¡Excelente! No hay KPIs críticos en este momento.\n\n` +
+                        `**Enfoque sugerido:**\n` +
+                        `• Mantener momentum en KPIs en progreso\n` +
+                        `• Iniciar los ${noIniciados} KPIs pendientes\n` +
+                        `• Documentar lecciones aprendidas de los completados`;
+                }
+            }
+            
+            // Default: información general
+            else {
+                response = `🤖 Puedo ayudarte con:\n\n` +
+                    `• "¿Cuál es el avance general?" - Resumen completo\n` +
+                    `• "¿Qué está en riesgo?" - KPIs críticos\n` +
+                    `• "¿Cómo va Comunicaciones?" - Por área\n` +
+                    `• "¿Qué hay en Q2?" - Por trimestre\n` +
+                    `• "Dame recomendaciones" - Priorización\n` +
+                    `• "¿Quiénes son responsables?" - Asignaciones\n\n` +
+                    `Escribe tu pregunta de forma natural.`;
+            }
+            
+            return { response, filter };
+        }
+        
+        function analyzeDireccion(direccion) {
+            const kpis = kpisData.filter(k => k.Direccion === direccion);
+            if (kpis.length === 0) {
+                return { 
+                    response: `No encontré KPIs para "${direccion}". ¿Quizás escribiste mal el nombre?`,
+                    filter: null
+                };
+            }
+            
+            const avg = Math.round(kpis.reduce((sum, k) => sum + k.Porcentaje, 0) / kpis.length);
+            const completados = kpis.filter(k => k.Estado === 'Completado').length;
+            const enRiesgo = kpis.filter(k => k.Semaforo === '🔴').length;
+            
+            let response = `📊 **${direccion}**\n\n`;
+            response += `• Total KPIs: ${kpis.length}\n`;
+            response += `• Cumplimiento promedio: ${avg}%\n`;
+            response += `• Completados: ${completados}\n`;
+            response += `• En riesgo: ${enRiesgo}\n\n`;
+            
+            response += `**Detalle por KPI:**\n`;
+            kpis.forEach(kpi => {
+                response += `${kpi.Semaforo} ${kpi.KPI} - ${kpi.Porcentaje}%\n`;
+            });
+            
+            return {
+                response,
+                filter: { type: 'direccion', value: direccion }
+            };
+        }
+        
+        function analyzeTrimestre(trimestre) {
+            const kpis = kpisData.filter(k => k.Trimestre === trimestre);
+            if (kpis.length === 0) {
+                return { 
+                    response: `No hay KPIs programados para ${trimestre}.`,
+                    filter: null
+                };
+            }
+            
+            const avg = Math.round(kpis.reduce((sum, k) => sum + k.Porcentaje, 0) / kpis.length);
+            const completados = kpis.filter(k => k.Estado === 'Completado').length;
+            const enRiesgo = kpis.filter(k => k.Semaforo === '🔴').length;
+            
+            let response = `📅 **${trimestre}**\n\n`;
+            response += `• Total KPIs: ${kpis.length}\n`;
+            response += `• Cumplimiento promedio: ${avg}%\n`;
+            response += `• Completados: ${completados}\n`;
+            response += `• En riesgo: ${enRiesgo}\n\n`;
+            
+            const byDir = {};
+            kpis.forEach(kpi => {
+                if (!byDir[kpi.Direccion]) byDir[kpi.Direccion] = [];
+                byDir[kpi.Direccion].push(kpi);
+            });
+            
+            response += `**Por Dirección:**\n`;
+            Object.entries(byDir).forEach(([dir, dirKpis]) => {
+                const dirAvg = Math.round(dirKpis.reduce((sum, k) => sum + k.Porcentaje, 0) / dirKpis.length);
+                response += `• ${dir}: ${dirKpis.length} KPIs (${dirAvg}%)\n`;
+            });
+            
+            return {
+                response,
+                filter: { type: 'trimestre', value: trimestre }
+            };
+        }
+        
+        function addChatMessage(sender, message, filterData = null) {
+            const chatMessages = document.getElementById('chatMessages');
+            const chatTyping = document.getElementById('chatTyping');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = `chat-avatar ${sender}`;
+            avatarDiv.textContent = sender === 'ai' ? '🤖' : '👤';
+            
+            const bubbleWrapper = document.createElement('div');
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'chat-bubble';
+            
+            // Format message with line breaks and basic markdown
+            let formattedMessage = message
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') // Bold
+                .replace(/\n/g, '<br>'); // Line breaks
+            
+            bubbleDiv.innerHTML = formattedMessage;
+            bubbleDiv.style.whiteSpace = 'pre-wrap';
+            
+            bubbleWrapper.appendChild(bubbleDiv);
+            
+            // Add filter badge if present
+            if (filterData) {
+                const filterBadge = document.createElement('div');
+                filterBadge.className = 'chat-filter-applied';
+                filterBadge.innerHTML = `🔍 Filtro aplicado: ${filterData.value} <span>→</span>`;
+                filterBadge.addEventListener('click', () => {
+                    document.querySelector('[data-tab="seguimiento"]').click();
+                });
+                bubbleWrapper.appendChild(filterBadge);
+            }
+            
+            if (sender === 'ai') {
+                messageDiv.appendChild(avatarDiv);
+                messageDiv.appendChild(bubbleWrapper);
+            } else {
+                messageDiv.appendChild(bubbleWrapper);
+                messageDiv.appendChild(avatarDiv);
+            }
+            
+            chatMessages.insertBefore(messageDiv, chatTyping);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function applyFilterFromChat(filterType, filterValue) {
+            // Map filter types to select IDs
+            const filterMap = {
+                'direccion': 'filterDireccion',
+                'trimestre': 'filterTrimestre',
+                'tipo': 'filterTipo',
+                'estado': 'filterEstado'
+            };
+            
+            const selectId = filterMap[filterType.toLowerCase()];
+            if (selectId) {
+                document.getElementById(selectId).value = filterValue;
+                applyFilters();
+                
+                // Switch to seguimiento tab
+                setTimeout(() => {
+                    document.querySelector('[data-tab="seguimiento"]').click();
+                    showToast(`Filtro aplicado: ${filterValue}`, 'success');
+                }, 500);
+            }
+        }
+
+        function init() {
+            populateFilters();
+            updateAllMetrics();
+            renderTable();
+            setupEventListeners();
+            updateLastUpdateDate();
+            initChat(); // Initialize AI chat
+        }
+
+        function updateLastUpdateDate() {
+            const now = new Date();
+            const formatted = now.toLocaleDateString('es-ES', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            document.getElementById('lastUpdate').textContent = formatted;
+            document.getElementById('adminLastUpdate').textContent = formatted;
+        }
+
+        function populateFilters() {
+            const direcciones = ['Todas', ...new Set(kpisData.map(k => k.Direccion))];
+            const trimestres = ['Todos', ...new Set(kpisData.map(k => k.Trimestre))];
+            const tipos = ['Todos', ...new Set(kpisData.map(k => k.Tipo_KPI))];
+            const estados = ['Todos', ...new Set(kpisData.map(k => k.Estado))];
+
+            populateSelect('filterDireccion', direcciones);
+            populateSelect('filterTrimestre', trimestres);
+            populateSelect('filterTipo', tipos);
+            populateSelect('filterEstado', estados);
+        }
+
+        function populateSelect(id, options) {
+            const select = document.getElementById(id);
+            select.innerHTML = options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filterDir = document.getElementById('filterDireccion').value;
+            const filterTrim = document.getElementById('filterTrimestre').value;
+            const filterTipo = document.getElementById('filterTipo').value;
+            const filterEst = document.getElementById('filterEstado').value;
+
+            filteredKPIs = kpisData.filter(kpi => {
+                const matchSearch = !search || 
+                    kpi.KPI.toLowerCase().includes(search) ||
+                    kpi.Objetivo_Especifico.toLowerCase().includes(search) ||
+                    kpi.Acciones.toLowerCase().includes(search);
+                
+                const matchDir = filterDir === 'Todas' || kpi.Direccion === filterDir;
+                const matchTrim = filterTrim === 'Todos' || kpi.Trimestre === filterTrim;
+                const matchTipo = filterTipo === 'Todos' || kpi.Tipo_KPI === filterTipo;
+                const matchEst = filterEst === 'Todos' || kpi.Estado === filterEst;
+                
+                return matchSearch && matchDir && matchTrim && matchTipo && matchEst;
+            });
+
+            renderTable();
+            updateActiveFilters();
+        }
+
+        function updateActiveFilters() {
+            const container = document.getElementById('activeFiltersContainer');
+            const filters = [];
+
+            if (document.getElementById('searchInput').value) {
+                filters.push({ type: 'search', value: document.getElementById('searchInput').value });
+            }
+            if (document.getElementById('filterDireccion').value !== 'Todas') {
+                filters.push({ type: 'direccion', value: document.getElementById('filterDireccion').value });
+            }
+            if (document.getElementById('filterTrimestre').value !== 'Todos') {
+                filters.push({ type: 'trimestre', value: document.getElementById('filterTrimestre').value });
+            }
+            if (document.getElementById('filterTipo').value !== 'Todos') {
+                filters.push({ type: 'tipo', value: document.getElementById('filterTipo').value });
+            }
+            if (document.getElementById('filterEstado').value !== 'Todos') {
+                filters.push({ type: 'estado', value: document.getElementById('filterEstado').value });
+            }
+
+            if (filters.length > 0) {
+                container.style.display = 'flex';
+                container.innerHTML = filters.map(f => `
+                    <div class="filter-badge">
+                        ${f.value}
+                        <span class="filter-badge-close" data-filter="${f.type}">×</span>
+                    </div>
+                `).join('') + `<span style="color: #64748b; font-size: 12px; margin-left: auto;">Mostrando ${filteredKPIs.length} de ${kpisData.length} KPIs</span>`;
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            const empty = document.getElementById('emptyState');
+            
+            if (filteredKPIs.length === 0) {
+                tbody.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            
+            empty.style.display = 'none';
+            tbody.innerHTML = filteredKPIs.map(kpi => {
+                const progressClass = kpi.Porcentaje >= 70 ? 'high' : kpi.Porcentaje >= 40 ? 'medium' : 'low';
+                const estadoClass = kpi.Estado.toLowerCase().replace(/ /g, '-');
+                
+                return `
+                    <tr data-kpi-id="${kpi.ID_KPI}">
+                        <td class="id-cell">${kpi.ID_KPI}</td>
+                        <td><span class="badge direccion">${kpi.Direccion}</span></td>
+                        <td class="kpi-cell">
+                            <div class="kpi-title">${kpi.KPI}</div>
+                            <div class="kpi-subtitle">${kpi.Acciones}</div>
+                        </td>
+                        <td><span class="badge trimestre">${kpi.Trimestre}</span></td>
+                        <td><span class="badge tipo">${kpi.Tipo_KPI}</span></td>
+                        <td class="meta-cell">${kpi.Meta}<span class="meta-unit">${kpi.Unidad}</span></td>
+                        <td class="meta-cell">${kpi.Avance}</td>
+                        <td class="progress-cell">
+                            <div class="progress-wrapper">
+                                <div class="progress-bar-mini">
+                                    <div class="progress-fill ${progressClass}" style="width: ${kpi.Porcentaje}%"></div>
+                                </div>
+                                <div class="progress-text">${kpi.Porcentaje}%</div>
+                            </div>
+                        </td>
+                        <td><span class="badge estado-${estadoClass}">${kpi.Estado}</span></td>
+                        <td class="semaforo-cell">${kpi.Semaforo}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateAllMetrics() {
+            const total = kpisData.length;
+            const avgProgress = total > 0 
+                ? Math.round(kpisData.reduce((sum, k) => sum + k.Porcentaje, 0) / total)
+                : 0;
+            const verde = kpisData.filter(k => k.Semaforo === '🟢').length;
+            const rojo = kpisData.filter(k => k.Semaforo === '🔴').length;
+            const completed = kpisData.filter(k => k.Estado === 'Completado').length;
+            const inProgress = kpisData.filter(k => k.Estado === 'En progreso').length;
+
+            document.getElementById('headerTotal').textContent = total;
+            document.getElementById('headerAvg').textContent = avgProgress + '%';
+            document.getElementById('headerGreen').textContent = verde;
+            document.getElementById('headerRed').textContent = rojo;
+
+            document.getElementById('metricTotal').textContent = total;
+            document.getElementById('metricCompleted').textContent = completed;
+            document.getElementById('metricCompletedPct').textContent = Math.round(completed/total*100) + '%';
+            document.getElementById('metricInProgress').textContent = inProgress;
+            document.getElementById('metricInProgressPct').textContent = Math.round(inProgress/total*100) + '%';
+            document.getElementById('metricScore').textContent = avgProgress + '%';
+
+            document.getElementById('adminTotal').textContent = total;
+            const direcciones = new Set(kpisData.map(k => k.Direccion)).size;
+            document.getElementById('adminDirecciones').textContent = direcciones;
+            document.getElementById('adminAvg').textContent = avgProgress + '%';
+        }
+
+        // Funciones de gráficas, timeline, roadmap, import/export...
+        // (Se incluirían aquí completas, pero por límites de espacio las resumo)
+
+        function renderTimeline() {
+            const container = document.getElementById('timelineContainer');
+            const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+            
+            container.innerHTML = quarters.map(q => {
+                const kpis = kpisData.filter(k => k.Trimestre === q);
+                const total = kpis.length;
+                const avgProg = total > 0 ? Math.round(kpis.reduce((sum, k) => sum + k.Porcentaje, 0) / total) : 0;
+                
+                return `
+                    <div class="timeline-quarter">
+                        <div class="timeline-quarter-header">
+                            <div class="timeline-quarter-label">${q}</div>
+                            <div class="timeline-quarter-bar">
+                                <div class="timeline-quarter-progress" style="width: ${avgProg}%">${avgProg}%</div>
+                                <div class="timeline-quarter-count">${total} KPIs</div>
+                            </div>
+                        </div>
+                        <div class="timeline-kpis">
+                            ${kpis.map(kpi => {
+                                const color = kpi.Semaforo === '🟢' ? 'green' : kpi.Semaforo === '🟡' ? 'yellow' : 'red';
+                                return `
+                                    <div class="timeline-kpi-item ${color}" data-kpi-id="${kpi.ID_KPI}">
+                                        <div class="timeline-kpi-title">${kpi.KPI}</div>
+                                        <div class="timeline-kpi-meta">${kpi.Direccion} • ${kpi.Porcentaje}%</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderRoadmap() {
+            const table = document.getElementById('roadmapTable');
+            const direcciones = [...new Set(kpisData.map(k => k.Direccion))];
+            const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+            
+            let html = '<tr><th>Dirección</th>';
+            quarters.forEach(q => html += `<th>${q}</th>`);
+            html += '</tr>';
+            
+            direcciones.forEach(dir => {
+                html += `<tr><td style="font-weight: 600; text-align: left;">${dir}</td>`;
+                quarters.forEach(q => {
+                    const kpis = kpisData.filter(k => k.Direccion === dir && k.Trimestre === q);
+                    html += '<td><div class="roadmap-cell"><div class="roadmap-dots">';
+                    kpis.forEach(kpi => {
+                        const color = kpi.Semaforo === '🟢' ? 'green' : kpi.Semaforo === '🟡' ? 'yellow' : 'red';
+                        html += `<span class="roadmap-dot ${color}" data-kpi-id="${kpi.ID_KPI}"></span>`;
+                    });
+                    html += `</div><div class="roadmap-count">${kpis.length}</div></div></td>`;
+                });
+                html += '</tr>';
+            });
+            
+            table.innerHTML = html;
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById('tab-' + tabName).classList.add('active');
+                    
+                    if (tabName === 'analytics') {
+                        setTimeout(() => {
+                            renderCharts();
+                            renderHeatmap();
+                            renderTopBottom();
+                        }, 100);
+                    } else if (tabName === 'plan') {
+                        renderTimeline();
+                        renderRoadmap();
+                    }
+                });
+            });
+
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+            document.getElementById('filterDireccion').addEventListener('change', applyFilters);
+            document.getElementById('filterTrimestre').addEventListener('change', applyFilters);
+            document.getElementById('filterTipo').addEventListener('change', applyFilters);
+            document.getElementById('filterEstado').addEventListener('change', applyFilters);
+            
+            document.getElementById('btnClear').addEventListener('click', () => {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('filterDireccion').value = 'Todas';
+                document.getElementById('filterTrimestre').value = 'Todos';
+                document.getElementById('filterTipo').value = 'Todos';
+                document.getElementById('filterEstado').value = 'Todos';
+                applyFilters();
+            });
+
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.filter-badge-close')) {
+                    const filterType = e.target.dataset.filter;
+                    if (filterType === 'search') document.getElementById('searchInput').value = '';
+                    else if (filterType === 'direccion') document.getElementById('filterDireccion').value = 'Todas';
+                    else if (filterType === 'trimestre') document.getElementById('filterTrimestre').value = 'Todos';
+                    else if (filterType === 'tipo') document.getElementById('filterTipo').value = 'Todos';
+                    else if (filterType === 'estado') document.getElementById('filterEstado').value = 'Todos';
+                    applyFilters();
+                }
+
+                if (e.target.closest('[data-kpi-id]')) {
+                    const kpiId = e.target.closest('[data-kpi-id]').dataset.kpiId;
+                    showKPIDetail(kpiId);
+                }
+            });
+
+            document.getElementById('csvFileInput').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) importCSV(file);
+            });
+            
+            document.getElementById('btnExportCSV').addEventListener('click', exportCSV);
+            document.getElementById('btnExportExcel').addEventListener('click', exportExcel);
+            
+            document.getElementById('modalClose').addEventListener('click', () => {
+                document.getElementById('kpiModal').classList.remove('show');
+            });
+        }
+
+        function showKPIDetail(kpiId) {
+            const kpi = kpisData.find(k => k.ID_KPI === kpiId);
+            if (!kpi) return;
+
+            document.getElementById('modalTitle').textContent = kpi.KPI;
+            document.getElementById('modalBody').innerHTML = `
+                <div style="display: grid; gap: 16px;">
+                    <div><strong>ID:</strong> ${kpi.ID_KPI}</div>
+                    <div><strong>Dirección:</strong> ${kpi.Direccion}</div>
+                    <div><strong>Trimestre:</strong> ${kpi.Trimestre}</div>
+                    <div><strong>Tipo:</strong> ${kpi.Tipo_KPI}</div>
+                    <div><strong>Objetivo:</strong> ${kpi.Objetivo_Especifico}</div>
+                    <div><strong>Acciones:</strong> ${kpi.Acciones}</div>
+                    <div><strong>Meta:</strong> ${kpi.Meta} ${kpi.Unidad}</div>
+                    <div><strong>Avance:</strong> ${kpi.Avance} (${kpi.Porcentaje}%)</div>
+                    <div><strong>Estado:</strong> ${kpi.Estado} ${kpi.Semaforo}</div>
+                    <div><strong>Responsable:</strong> ${kpi.Responsable || 'No asignado'}</div>
+                    ${kpi.Comentarios ? `<div><strong>Comentarios:</strong> ${kpi.Comentarios}</div>` : ''}
+                </div>
+            `;
+            document.getElementById('kpiModal').classList.add('show');
+        }
+
+        function importCSV(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const text = e.target.result;
+                    const lines = text.trim().split('\n');
+                    const headers = parseCSVLine(lines[0]);
+                    
+                    kpisData = lines.slice(1).map(line => {
+                        const values = parseCSVLine(line);
+                        const kpi = {};
+                        headers.forEach((header, i) => {
+                            const key = header.trim().replace('﻿', '');
+                            let value = values[i] || '';
+                            
+                            if (['Meta', 'Avance', 'Porcentaje'].includes(key)) {
+                                value = parseFloat(value) || 0;
+                            }
+                            
+                            kpi[key] = value;
+                        });
+                        return kpi;
+                    });
+
+                    filteredKPIs = [...kpisData];
+                    populateFilters();
+                    updateAllMetrics();
+                    renderTable();
+                    updateLastUpdateDate();
+                    showToast('✅ CSV importado exitosamente', 'success');
+                } catch (error) {
+                    showToast('❌ Error al importar CSV: ' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                const nextChar = line[i + 1];
+                
+                if (char === '"') {
+                    if (inQuotes && nextChar === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current);
+            return result;
+        }
+
+        function exportCSV() {
+            const headers = ['ID_KPI', 'Direccion', 'KPI', 'Objetivo_Especifico', 'Acciones', 'Trimestre', 'Tipo_KPI', 'Meta', 'Unidad', 'Avance', 'Porcentaje', 'Estado', 'Semaforo', 'Responsable', 'Comentarios'];
+            
+            const csvContent = [
+                headers.join(','),
+                ...kpisData.map(kpi => 
+                    headers.map(h => {
+                        const value = kpi[h] || '';
+                        return typeof value === 'string' && (value.includes(',') || value.includes('"')) 
+                            ? `"${value.replace(/"/g, '""')}"` 
+                            : value;
+                    }).join(',')
+                )
+            ].join('\n');
+
+            downloadFile(csvContent, 'plan_afidro_2026.csv', 'text/csv');
+            showToast('✅ CSV exportado exitosamente', 'success');
+        }
+
+        function exportExcel() {
+            const headers = ['ID_KPI', 'Direccion', 'KPI', 'Objetivo_Especifico', 'Acciones', 'Trimestre', 'Tipo_KPI', 'Meta', 'Unidad', 'Avance', 'Porcentaje', 'Estado', 'Semaforo', 'Responsable', 'Comentarios'];
+            
+            const tsvContent = [
+                headers.join('\t'),
+                ...kpisData.map(kpi => headers.map(h => kpi[h] || '').join('\t'))
+            ].join('\n');
+
+            downloadFile(tsvContent, 'plan_afidro_2026.xls', 'application/vnd.ms-excel');
+            showToast('✅ Excel exportado exitosamente', 'success');
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toast.className = 'toast show ' + type;
+            toastMessage.textContent = message;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function renderCharts() {
+            renderChartDireccion();
+            renderChartEstados();
+            renderChartTrimestres();
+            renderChartTipos();
+        }
+
+        function renderChartDireccion() {
+            const ctx = document.getElementById('chartDireccion');
+            if (!ctx) return;
+            
+            const byDir = {};
+            kpisData.forEach(kpi => {
+                if (!byDir[kpi.Direccion]) byDir[kpi.Direccion] = { total: 0, sum: 0 };
+                byDir[kpi.Direccion].total++;
+                byDir[kpi.Direccion].sum += kpi.Porcentaje;
+            });
+
+            const labels = Object.keys(byDir);
+            const data = labels.map(d => Math.round(byDir[d].sum / byDir[d].total));
+
+            if (charts.direccion) charts.direccion.destroy();
+            charts.direccion = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '% Cumplimiento',
+                        data: data,
+                        backgroundColor: '#2c5aa0'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onClick: (e, items) => {
+                        if (items.length > 0) {
+                            const index = items[0].index;
+                            const direccion = labels[index];
+                            document.getElementById('filterDireccion').value = direccion;
+                            applyFilters();
+                            document.querySelector('[data-tab="seguimiento"]').click();
+                        }
+                    },
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+        }
+
+        function renderChartEstados() {
+            const ctx = document.getElementById('chartEstados');
+            if (!ctx) return;
+
+            const estados = {};
+            kpisData.forEach(kpi => {
+                estados[kpi.Estado] = (estados[kpi.Estado] || 0) + 1;
+            });
+
+            const labels = Object.keys(estados);
+            const data = Object.values(estados);
+            const colors = {
+                'Completado': '#10b981',
+                'En progreso': '#3b82f6',
+                'Con retrasos': '#f59e0b',
+                'No iniciado': '#ef4444'
+            };
+
+            if (charts.estados) charts.estados.destroy();
+            charts.estados = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: labels.map(l => colors[l] || '#94a3b8')
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onClick: (e, items) => {
+                        if (items.length > 0) {
+                            const index = items[0].index;
+                            const estado = labels[index];
+                            document.getElementById('filterEstado').value = estado;
+                            applyFilters();
+                            document.querySelector('[data-tab="seguimiento"]').click();
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderChartTrimestres() {
+            const ctx = document.getElementById('chartTrimestres');
+            if (!ctx) return;
+
+            const trimestres = {};
+            kpisData.forEach(kpi => {
+                trimestres[kpi.Trimestre] = (trimestres[kpi.Trimestre] || 0) + 1;
+            });
+
+            const labels = Object.keys(trimestres).sort();
+            const data = labels.map(t => trimestres[t]);
+
+            if (charts.trimestres) charts.trimestres.destroy();
+            charts.trimestres = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'KPIs',
+                        data: data,
+                        backgroundColor: '#764ba2'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onClick: (e, items) => {
+                        if (items.length > 0) {
+                            const index = items[0].index;
+                            const trimestre = labels[index];
+                            document.getElementById('filterTrimestre').value = trimestre;
+                            applyFilters();
+                            document.querySelector('[data-tab="seguimiento"]').click();
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderChartTipos() {
+            const ctx = document.getElementById('chartTipos');
+            if (!ctx) return;
+
+            const tipos = {};
+            kpisData.forEach(kpi => {
+                tipos[kpi.Tipo_KPI] = (tipos[kpi.Tipo_KPI] || 0) + 1;
+            });
+
+            const labels = Object.keys(tipos);
+            const data = Object.values(tipos);
+
+            if (charts.tipos) charts.tipos.destroy();
+            charts.tipos = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#2c5aa0', '#f59e0b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onClick: (e, items) => {
+                        if (items.length > 0) {
+                            const index = items[0].index;
+                            const tipo = labels[index];
+                            document.getElementById('filterTipo').value = tipo;
+                            applyFilters();
+                            document.querySelector('[data-tab="seguimiento"]').click();
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderHeatmap() {
+            const table = document.getElementById('heatmapTable');
+            const direcciones = [...new Set(kpisData.map(k => k.Direccion))];
+            const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+            
+            let html = '<tr><th></th>';
+            quarters.forEach(q => html += `<th>${q}</th>`);
+            html += '</tr>';
+            
+            direcciones.forEach(dir => {
+                html += `<tr><td style="font-weight: 600; text-align: left; background: #f8fafc;">${dir}</td>`;
+                quarters.forEach(q => {
+                    const kpis = kpisData.filter(k => k.Direccion === dir && k.Trimestre === q);
+                    if (kpis.length === 0) {
+                        html += '<td class="heatmap-cell none">-</td>';
+                    } else {
+                        const avgProg = Math.round(kpis.reduce((sum, k) => sum + k.Porcentaje, 0) / kpis.length);
+                        const cssClass = avgProg >= 70 ? 'high' : avgProg >= 40 ? 'medium' : 'low';
+                        html += `<td class="heatmap-cell ${cssClass}" data-dir="${dir}" data-quarter="${q}">${avgProg}%<br><small>(${kpis.length} KPIs)</small></td>`;
+                    }
+                });
+                html += '</tr>';
+            });
+            
+            table.innerHTML = html;
+
+            table.querySelectorAll('.heatmap-cell:not(.none)').forEach(cell => {
+                cell.addEventListener('click', () => {
+                    const dir = cell.dataset.dir;
+                    const quarter = cell.dataset.quarter;
+                    document.getElementById('filterDireccion').value = dir;
+                    document.getElementById('filterTrimestre').value = quarter;
+                    applyFilters();
+                    document.querySelector('[data-tab="seguimiento"]').click();
+                });
+            });
+        }
+
+        function renderTopBottom() {
+            const sorted = [...kpisData].sort((a, b) => b.Porcentaje - a.Porcentaje);
+            const top5 = sorted.slice(0, 5);
+            const bottom5 = sorted.slice(-5).reverse();
+
+            document.getElementById('topPerformers').innerHTML = top5.map(kpi => `
+                <div class="list-item success" data-kpi-id="${kpi.ID_KPI}">
+                    <div class="list-item-info">
+                        <div class="list-item-title">${kpi.KPI}</div>
+                        <div class="list-item-subtitle">${kpi.Direccion} - ${kpi.Trimestre}</div>
+                    </div>
+                    <div class="list-item-value" style="color: #10b981;">${kpi.Porcentaje}%</div>
+                </div>
+            `).join('');
+
+            document.getElementById('bottomPerformers').innerHTML = bottom5.map(kpi => `
+                <div class="list-item danger" data-kpi-id="${kpi.ID_KPI}">
+                    <div class="list-item-info">
+                        <div class="list-item-title">${kpi.KPI}</div>
+                        <div class="list-item-subtitle">${kpi.Direccion} - ${kpi.Trimestre}</div>
+                    </div>
+                    <div class="list-item-value" style="color: #ef4444;">${kpi.Porcentaje}%</div>
+                </div>
+            `).join('');
+        }
+
+        init();
+    </script>
+</body>
+</html>
