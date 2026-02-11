@@ -959,16 +959,26 @@
         }
         
         .evento-date-compact {
-            min-width: 50px;
+            min-width: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
+            gap: 4px;
         }
         
         .evento-date-day-compact {
             font-size: 24px;
             font-weight: 700;
             color: #2c5aa0;
+        }
+        
+        .evento-date-display {
+            font-size: 13px;
+            font-weight: 700;
+            color: #2c5aa0;
+            text-align: center;
+            line-height: 1.3;
         }
         
         .evento-content-compact {
@@ -980,11 +990,25 @@
             font-weight: 600;
             color: #1e293b;
             margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         
         .evento-meta-compact {
             font-size: 12px;
             color: #64748b;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+        
+        .evento-contexto-compact {
+            font-size: 11px;
+            color: #64748b;
+            font-style: italic;
+            margin-top: 6px;
+            line-height: 1.4;
         }
         
         .evento-badge-compact {
@@ -995,6 +1019,27 @@
             border-radius: 8px;
             font-size: 11px;
             font-weight: 500;
+        }
+        
+        .evento-estado-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .evento-estado-badge.confirmado {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .evento-estado-badge.por-confirmar {
+            background: #fef3c7;
+            color: #92400e;
         }
         
         /* Mapa Container */
@@ -3851,12 +3896,13 @@
                             evento[header.trim().replace('ï»¿', '')] = values[i] || '';
                         });
                         return evento;
-                    }).filter(e => e.Fecha); // Filtrar eventos válidos
+                    }).filter(e => e.Nombre && e.Nombre.trim() !== ''); // Filtrar eventos válidos (que tengan nombre)
 
                     renderEventosTimeline();
                     document.getElementById('btnExportEventos').style.display = 'inline-block';
                     showToast('✅ Eventos importados exitosamente: ' + eventosData.length + ' eventos', 'success');
                 } catch (error) {
+                    console.error('Error importando eventos:', error);
                     showToast('❌ Error al importar eventos: ' + error.message, 'error');
                 }
             };
@@ -3876,25 +3922,106 @@
                 return;
             }
             
-            // Ordenar eventos por fecha
-            const sortedEventos = [...eventosData].sort((a, b) => new Date(a.Fecha) - new Date(b.Fecha));
+            // Función auxiliar para parsear fecha como HORA LOCAL (no UTC)
+            function parseFechaLocal(fechaStr) {
+                if (!fechaStr || fechaStr.trim() === '') return null;
+                const [year, month, day] = fechaStr.split('-').map(n => parseInt(n));
+                return new Date(year, month - 1, day); // mes es 0-indexed en JS
+            }
             
-            // Agrupar por mes
+            // Función auxiliar para formatear fechas
+            function formatearFecha(evento) {
+                if (evento.Fecha_Inicio) {
+                    const inicio = parseFechaLocal(evento.Fecha_Inicio);
+                    if (!inicio) return { display: 'FECHA INVÁLIDA', tipo: 'indefinido', fecha: new Date(2099, 11, 31) };
+                    
+                    if (evento.Fecha_Fin && evento.Fecha_Fin !== evento.Fecha_Inicio) {
+                        const fin = parseFechaLocal(evento.Fecha_Fin);
+                        if (!fin) return { display: 'FECHA INVÁLIDA', tipo: 'indefinido', fecha: new Date(2099, 11, 31) };
+                        
+                        // Rango de fechas
+                        if (inicio.getMonth() === fin.getMonth()) {
+                            // Mismo mes: "28-29 ENE"
+                            return {
+                                display: `${inicio.getDate()}-${fin.getDate()} ${inicio.toLocaleDateString('es-ES', { month: 'short' }).toUpperCase()}`,
+                                tipo: 'rango',
+                                fecha: inicio
+                            };
+                        } else {
+                            // Meses diferentes: "28 ENE - 2 FEB"
+                            return {
+                                display: `${inicio.getDate()} ${inicio.toLocaleDateString('es-ES', { month: 'short' }).toUpperCase()} - ${fin.getDate()} ${fin.toLocaleDateString('es-ES', { month: 'short' }).toUpperCase()}`,
+                                tipo: 'rango',
+                                fecha: inicio
+                            };
+                        }
+                    } else {
+                        // Fecha única: "12 FEB"
+                        return {
+                            display: `${inicio.getDate()} ${inicio.toLocaleDateString('es-ES', { month: 'short' }).toUpperCase()}`,
+                            tipo: 'unica',
+                            fecha: inicio
+                        };
+                    }
+                } else if (evento.Mes_Referencia) {
+                    // Solo mes: "MARZO 2026"
+                    const [year, month] = evento.Mes_Referencia.split('-');
+                    const fecha = new Date(year, parseInt(month) - 1, 15);
+                    const mesNombre = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+                    return {
+                        display: mesNombre.toUpperCase(),
+                        tipo: 'mes',
+                        fecha: fecha
+                    };
+                }
+                return {
+                    display: 'POR DEFINIR',
+                    tipo: 'indefinido',
+                    fecha: new Date(2099, 11, 31)
+                };
+            }
+            
+            // Ordenar eventos por fecha
+            const eventosConFecha = eventosData.map(e => ({
+                ...e,
+                fechaFormateada: formatearFecha(e)
+            })).sort((a, b) => a.fechaFormateada.fecha - b.fechaFormateada.fecha);
+            
+            // Agrupar por mes de referencia
             const byMonth = {};
-            sortedEventos.forEach(evento => {
-                const fecha = new Date(evento.Fecha);
-                const mes = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
-                const mesKey = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`;
+            eventosConFecha.forEach(evento => {
+                let mesKey, label;
+                
+                if (evento.Mes_Referencia) {
+                    mesKey = evento.Mes_Referencia;
+                    const [year, month] = mesKey.split('-');
+                    const fecha = new Date(year, parseInt(month) - 1, 15);
+                    label = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+                    label = label.charAt(0).toUpperCase() + label.slice(1);
+                } else if (evento.Fecha_Inicio) {
+                    const fecha = parseFechaLocal(evento.Fecha_Inicio);
+                    if (fecha) {
+                        mesKey = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`;
+                        label = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+                        label = label.charAt(0).toUpperCase() + label.slice(1);
+                    } else {
+                        mesKey = 'por-definir';
+                        label = 'Por Definir';
+                    }
+                } else {
+                    mesKey = 'por-definir';
+                    label = 'Por Definir';
+                }
                 
                 if (!byMonth[mesKey]) {
-                    byMonth[mesKey] = { label: mes.charAt(0).toUpperCase() + mes.slice(1), eventos: [] };
+                    byMonth[mesKey] = { label, eventos: [] };
                 }
                 byMonth[mesKey].eventos.push(evento);
             });
             
             // Renderizar colapsados por mes
             let html = '';
-            Object.entries(byMonth).forEach(([key, data]) => {
+            Object.entries(byMonth).sort((a, b) => a[0].localeCompare(b[0])).forEach(([key, data]) => {
                 html += `
                     <div class="evento-mes-group">
                         <div class="evento-mes-header" onclick="toggleMonthEvents('${key}')">
@@ -3904,20 +4031,27 @@
                         </div>
                         <div class="evento-mes-content hidden" id="mes-${key}">
                             ${data.eventos.map(evento => {
-                                const fecha = new Date(evento.Fecha);
-                                const dia = fecha.getDate();
+                                const estadoClass = evento.Estado_Confirmacion === 'Confirmado' ? 'confirmado' : 'por-confirmar';
+                                const estadoIcon = evento.Estado_Confirmacion === 'Confirmado' ? '✓' : '?';
+                                const lugarDisplay = evento.Lugar || 'Por definir';
+                                const ciudadDisplay = evento.Ciudad ? `${evento.Ciudad}${evento.Pais ? ', ' + evento.Pais : ''}` : evento.Pais || '';
                                 
                                 return `
                                     <div class="evento-item-compact">
                                         <div class="evento-date-compact">
-                                            <div class="evento-date-day-compact">${dia}</div>
+                                            <div class="evento-date-display">${evento.fechaFormateada.display}</div>
                                         </div>
                                         <div class="evento-content-compact">
-                                            <div class="evento-titulo-compact">${evento.Nombre}</div>
+                                            <div class="evento-titulo-compact">
+                                                ${evento.Nombre}
+                                                <span class="evento-estado-badge ${estadoClass}" title="${evento.Estado_Confirmacion}">${estadoIcon}</span>
+                                            </div>
                                             <div class="evento-meta-compact">
-                                                📍 ${evento.Lugar} • 🏢 ${evento.Direccion}
+                                                📍 ${lugarDisplay}${ciudadDisplay ? ` (${ciudadDisplay})` : ''}
+                                                ${evento.Direccion ? ` • 🏢 ${evento.Direccion}` : ''}
                                                 ${evento.Tipo ? ` • <span class="evento-badge-compact">${evento.Tipo}</span>` : ''}
                                             </div>
+                                            ${evento.Contexto ? `<div class="evento-contexto-compact">${evento.Contexto.substring(0, 150)}${evento.Contexto.length > 150 ? '...' : ''}</div>` : ''}
                                         </div>
                                     </div>
                                 `;
